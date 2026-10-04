@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard & Auth</title>
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --bg: #F3F4F6;
+      --card: #FFFFFF;
+      --text: #1F2937;
+      --accent: #10B981;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--card);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .hidden { display: none !important; }
+    h2 { text-align: center; margin-bottom: 20px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input[type="text"], input[type="tel"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #CCC;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { opacity: 0.9; }
+    .switch-auth { text-align: center; margin-top: 15px; }
+    .switch-auth a { color: var(--primary); cursor: pointer; text-decoration: underline; }
+    
+    /* Cartoon Avatar Selector */
+    .avatar-grid {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 10px 0;
+    }
+    .avatar-grid img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      cursor: pointer;
+    }
+    .avatar-grid img.selected { border-color: var(--primary); }
+    
+    /* Profile Display */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border-bottom: 2px solid var(--bg);
+      padding-bottom: 20px;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary);
+    }
+    
+    /* Stats & Reminders */
+    .stats-card {
+      background: #EEF2FF;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .reminders-list {
+      background: #FEF3C7;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .reminders-list ul { margin: 0; padding-left: 20px; }
+    .logout-btn { background: #EF4444; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- 1. AUTHENTICATION FORM -->
+  <div id="authSection">
+    <h2 id="authTitle">Log In</h2>
+    <form id="authForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+      </div>
+      
+      <!-- Additional fields shown only during sign up -->
+      <div id="signUpFields" class="hidden">
+        <div class="form-group">
+          <label for="phone">Mobile Number</label>
+          <input type="tel" id="phone" placeholder="+1234567890">
+        </div>
+        
+        <label>Select a Cartoon Avatar:</label>
+        <div class="avatar-grid" id="avatarOptions">
+          <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Felix" class="selected" onclick="selectAvatar(this)">
+          <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Aneka" onclick="selectAvatar(this)">
+          <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Spot" onclick="selectAvatar(this)">
+          <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Precious" onclick="selectAvatar(this)">
+        </div>
+
+        <div class="form-group">
+          <label>...or Upload Your Own Photo</label>
+          <input type="file" id="customAvatar" accept="image/*">
+        </div>
+      </div>
+
+      <button type="submit" id="authSubmitBtn">Log In</button>
+    </form>
+    
+    <div class="switch-auth">
+      <span id="switchText">Need an account?</span> 
+      <a id="switchLink" onclick="toggleAuthMode()">Sign Up</a>
+    </div>
+  </div>
+
+  <!-- 2. DASHBOARD & PROFILE SECTION -->
+  <div id="dashboardSection" class="hidden">
+    <div class="profile-header">
+      <img id="userDisplayAvatar" class="profile-avatar" src="" alt="Profile Picture">
+      <div>
+        <h3 id="userDisplayName" style="margin:0;">User Name</h3>
+        <p id="userDisplayPhone" style="margin:5px 0 0 0; color:#6B7280;">Mobile: -</p>
+      </div>
+    </div>
+
+    <!-- Progress Card -->
+    <div class="stats-card">
+      <h3>Your Progress</h3>
+      <p><strong id="completedCount">0</strong> tasks completed!</p>
+    </div>
+
+    <!-- Uncompleted Tasks / Reminders -->
+    <div class="reminders-list">
+      <h3>⚠️ Pending Tasks Reminder</h3>
+      <ul id="pendingTasksList">
+        <!-- Rendered via JavaScript -->
+      </ul>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+  </div>
+
+</div>
+
+<script>
+  let isSignUpMode = false;
+  let selectedAvatarUrl = "https://api.dicebear.com/7.x/bottts/svg?seed=Felix";
+
+  // Check login state on initial render
+  window.onload = function() {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (currentUser) {
+      showDashboard(currentUser);
+    }
+  };
+
+  // Avatar Selection Logic
+  function selectAvatar(element) {
+    document.querySelectorAll('.avatar-grid img').forEach(img => img.classList.remove('selected'));
+    element.classList.add('selected');
+    selectedAvatarUrl = element.src;
+    document.getElementById('customAvatar').value = ""; // Clear file input if icon chosen
+  }
+
+  // Handle Form Mode Toggle
+  function toggleAuthMode() {
+    isSignUpMode = !isSignUpMode;
+    document.getElementById('authTitle').innerText = isSignUpMode ? "Sign Up" : "Log In";
+    document.getElementById('authSubmitBtn').innerText = isSignUpMode ? "Create Account" : "Log In";
+    document.getElementById('switchText').innerText = isSignUpMode ? "Already have an account?" : "Need an account?";
+    document.getElementById('switchLink').innerText = isSignUpMode ? "Log In" : "Sign Up";
+    document.getElementById('signUpFields').classList.toggle('hidden', !isSignUpMode);
+  }
+
+  // Handle Auth Submission
+  document.getElementById('authForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const users = JSON.parse(localStorage.getItem("users") || "{}");
+
+    if (isSignUpMode) {
+      if (users[username]) {
+        alert("Username already exists!");
+        return;
+      }
+
+      const phone = document.getElementById('phone').value.trim();
+      const fileInput = document.getElementById('customAvatar');
+
+      // Process image upload (Base64) or fallback to cartoon avatar
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          saveUserAndLogin(username, password, phone, evt.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        saveUserAndLogin(username, password, phone, selectedAvatarUrl);
+      }
+    } else {
+      // Log In Mode
+      if (users[username] && users[username].password === password) {
+        localStorage.setItem("currentUser", JSON.stringify(users[username]));
+        showDashboard(users[username]);
+      } else {
+        alert("Invalid username or password.");
+      }
+    }
+  });
+
+  function saveUserAndLogin(username, password, phone, avatar) {
+    const users = JSON.parse(localStorage.getItem("users") || "{}");
+    const newUser = { username, password, phone, avatar };
+    users[username] = newUser;
+    
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("currentUser", JSON.stringify(newUser));
+    showDashboard(newUser);
+  }
+
+  // Display User Dashboard & Progress
+  function showDashboard(user) {
+    document.getElementById('authSection').classList.add('hidden');
+    document.getElementById('dashboardSection').classList.remove('hidden');
+
+    document.getElementById('userDisplayName').innerText = user.username;
+    document.getElementById('userDisplayPhone').innerText = "Mobile: " + (user.phone || "Not provided");
+    document.getElementById('userDisplayAvatar').src = user.avatar;
+
+    loadTaskReminders();
+  }
+
+  // Pull local tasks statistics and pending works
+  function loadTaskReminders() {
+    // Reads from your existing local array structure
+    const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+    
+    const completed = tasks.filter(t => t.completed).length;
+    const pending = tasks.filter(t => !t.completed);
+
+    document.getElementById('completedCount').innerText = completed;
+
+    const listElement = document.getElementById('pendingTasksList');
+    listElement.innerHTML = "";
+
+    if (pending.length === 0) {
+      listElement.innerHTML = "<li>All tasks complete! Great job! 🎉</li>";
+    } else {
+      pending.forEach(task => {
+        const li = document.createElement('li');
+        li.innerText = task.text;
+        listElement.appendChild(li);
+      });
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem("currentUser");
+    document.getElementById('dashboardSection').classList.add('hidden');
+    document.getElementById('authSection').classList.remove('hidden');
+    document.getElementById('authForm').reset();
+  }
+</script>
+
+</body>
+</html>

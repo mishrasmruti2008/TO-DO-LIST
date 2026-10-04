@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Productivity Planner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 1. LOGIN & SIGN UP PORTAL -->
+<div id="authPortal" class="auth-container">
+    <h2 id="authTitle">Log In</h2>
+    
+    <form id="authForm" onsubmit="handleAuth(event)">
+        <!-- Standard Login / Signup Username Field -->
+        <div class="form-group">
+            <label for="authUsername">Username</label>
+            <input 
+                type="text" 
+                id="authUsername" 
+                placeholder="Enter your unique username" 
+                required
+            >
+            <span class="input-hint">Used for sign-in identification.</span>
+        </div>
+
+        <!-- Registration-Only Fields -->
+        <div id="signUpFields" class="hidden">
+            <div class="form-group">
+                <label for="authFullName">Full Name</label>
+                <input 
+                    type="text" 
+                    id="authFullName" 
+                    placeholder="e.g. John Doe"
+                >
+                <span class="input-hint">Enter your first and last name to personalize your dashboard.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="authEmail">Email Address</label>
+                <input 
+                    type="email" 
+                    id="authEmail" 
+                    placeholder="name@example.com"
+                >
+                <span class="input-hint">We'll use this for account verification and activity digests.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="authPhone">Mobile Number</label>
+                <input 
+                    type="tel" 
+                    id="authPhone" 
+                    placeholder="+1 (555) 000-0000"
+                >
+                <span class="input-hint">Include country code for SMS reminder notifications.</span>
+            </div>
+            
+            <div class="form-group">
+                <label>Choose a Cute Avatar</label>
+                <div class="avatar-options" id="avatarOptions">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Felix" class="selected" onclick="selectAvatar(this)" alt="Avatar 1">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Aneka" onclick="selectAvatar(this)" alt="Avatar 2">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Spot" onclick="selectAvatar(this)" alt="Avatar 3">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Precious" onclick="selectAvatar(this)" alt="Avatar 4">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="customAvatar">Or Upload Profile Photo</label>
+                <input type="file" id="customAvatar" accept="image/*">
+                <span class="input-hint">Supported formats: JPG, PNG, WebP (Max 2MB).</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="authPassword">Password</label>
+            <input 
+                type="password" 
+                id="authPassword" 
+                placeholder="••••••••" 
+                required
+            >
+            <span class="input-hint" id="passwordHint">Must be at least 6 characters long.</span>
+        </div>
+
+        <button type="submit" class="auth-btn" id="authSubmitBtn">Log In</button>
+    </form>
+    
+    <div class="auth-switch">
+        <span id="switchText">Need an account?</span> 
+        <a id="switchLink" onclick="toggleAuthMode()">Sign Up</a>
+    </div>
+</div>
+
+<!-- 2. PROTECTED MAIN APPLICATION WEBSITE -->
+<div id="mainApp" class="container hidden">
+
+    <header>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+        <h1>✨ My Productivity Planner</h1>
+        <p>Organize your day • Remember important dates • Stay productive</p>
+    </header>
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+        <button class="nav-btn active" onclick="showSection('tasks')">
+            📝 Daily Tasks
+        </button>
+        <button class="nav-btn" onclick="showSection('reminders')">
+            🔔 Reminders
+        </button>
+        <button class="nav-btn" onclick="showSection('events')">
+            🎂 Birthdays & Events
+        </button>
+        <button class="nav-btn" onclick="showSection('timer')">
+            ⏱️ Study / Work Timer
+        </button>
+        <button class="nav-btn" onclick="showSection('dashboard')">
+            📊 Dashboard
+        </button>
+    </div>
+
+    <!-- DAILY TASKS -->
+    <section id="tasks" class="section active">
+        <h2>📝 Today's Tasks</h2>
+        <div class="input-area">
+            <input type="text" id="taskInput" placeholder="Enter your task...">
+            <button class="add-btn" onclick="addTask()">+ Add Task</button>
+        </div>
+        <ul id="taskList"></ul>
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="totalTasks">0</h3>
+                <p>Total Tasks</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="completedTasks">0</h3>
+                <p>Completed</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="remainingTasks">0</h3>
+                <p>Remaining</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- REMINDERS -->
+    <section id="reminders" class="section">
+        <h2>🔔 Reminders</h2>
+        <div class="input-area">
+            <input type="text" id="reminderInput" placeholder="What should I remember?">
+            <input type="datetime-local" id="reminderTime">
+            <button type="button" class="add-btn" id="addReminderBtn">+ Add Reminder</button>
+        </div>
+        <ul id="reminderList"></ul>
+    </section>
+
+    <!-- BIRTHDAYS & EVENTS -->
+    <section id="events" class="section">
+        <h2>🎂 Birthdays & Important Events</h2>
+        <div class="input-area">
+            <input type="text" id="eventName" placeholder="Event / Birthday name">
+            <input type="date" id="eventDate">
+            <button class="add-btn" onclick="addEvent()">+ Add Event</button>
+        </div>
+        <div id="eventList"></div>
+    </section>
+
+    <!-- TIMER -->
+    <section id="timer" class="section">
+        <h2>⏱️ Study / Work Timer</h2>
+        <div class="timer-box">
+            <p>Select your session length:</p>
+            <br>
+            <select id="timerMinutes" onchange="setTimer()">
+                <option value="25">25 Minutes — Focus Session</option>
+                <option value="45">45 Minutes — Study Session</option>
+                <option value="60">60 Minutes — Deep Work</option>
+                <option value="90">90 Minutes — Long Session</option>
+            </select>
+
+            <div class="timer-visual">
+                <div class="hourglass" id="hourglass">
+                    <div class="glass-frame">
+                        <div class="sand top-sand" id="topSand"></div>
+                        <div class="sand bottom-sand" id="bottomSand"></div>
+                        <div class="sand-stream" id="sandStream"></div>
+                    </div>
+                </div>
+                <div id="timerDisplay">25:00</div>
+            </div>
+
+            <div class="timer-buttons">
+                <button class="start" onclick="startTimer()">▶ Start</button>
+                <button class="pause" onclick="pauseTimer()">⏸ Pause</button>
+                <button class="reset" onclick="resetTimer()">↻ Reset</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ENHANCED DASHBOARD SECTION -->
+    <section id="dashboard" class="section">
+        <h2>📊 Today's Dashboard</h2>
+
+        <!-- User Profile Card -->
+        <div class="profile-card">
+            <img id="dashProfileAvatar" class="profile-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Felix" alt="Profile Picture">
+            <div class="profile-info">
+                <h3 id="dashProfileName">User Name</h3>
+                <p id="dashProfileEmail">Email: -</p>
+                <p id="dashProfilePhone">Mobile: -</p>
+            </div>
+        </div>
+
+        <!-- Task Completion Counter Statistics -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="dashboardTotal">0</h3>
+                <p>Total Tasks</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="dashboardCompleted">0</h3>
+                <p>Completed</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="dashboardRemaining">0</h3>
+                <p>Remaining</p>
+            </div>
+        </div>
+
+        <!-- Detail Progress & Reminders -->
+        <div class="dashboard-grid">
+            <div class="dashboard-box">
+                <h4>⚠️ Uncompleted Task Reminders</h4>
+                <ul id="dashboardPendingTasks" class="pending-list">
+                    <li>No pending tasks!</li>
+                </ul>
+            </div>
+            <div class="dashboard-box">
+                <h4>⏱️ Current Timer Setting</h4>
+                <p id="dashboardTimerStatus">Focus Session: 25 minutes</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        Made with ❤️ for a productive day
+    </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>

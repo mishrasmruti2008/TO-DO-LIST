@@ -1,0 +1,557 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: "Quicksand", sans-serif;
+    color: #ffffff;
+    background: #020817;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    z-index: -3;
+    top: -8%;
+    left: -8%;
+    width: 116%;
+    height: 116%;
+    background-image:
+        linear-gradient(
+            rgba(2, 12, 35, 0.22),
+            rgba(1, 8, 25, 0.35)
+        ),
+        url("https://m.economictimes.com/thumb/msid-128671221,width-1200,height-1200,resizemode-4,imgsize-147007/cosmic-ripples-of-spacetime.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: cosmicMovement 22s ease-in-out infinite alternate;
+    filter: saturate(1.15) brightness(0.9);
+}
+
+@keyframes cosmicMovement {
+    0% { transform: scale(1) translate3d(0, 0, 0); background-position: 45% 50%; }
+    25% { transform: scale(1.04) translate3d(-1%, -1%, 0); background-position: 52% 46%; }
+    50% { transform: scale(1.08) translate3d(1%, 1%, 0); background-position: 58% 53%; }
+    75% { transform: scale(1.04) translate3d(-1%, 1%, 0); background-position: 48% 57%; }
+    100% { transform: scale(1) translate3d(0, 0, 0); background-position: 45% 50%; }
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 50% 40%, rgba(50, 150, 255, 0.08), transparent 40%),
+        linear-gradient(180deg, rgba(0, 5, 20, 0.18), rgba(0, 5, 25, 0.45));
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* AUTHENTICATION PORTAL STYLES */
+.auth-container {
+    width: min(480px, 92%);
+    margin: 60px auto;
+    padding: 35px 30px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(8, 30, 65, 0.8), rgba(20, 55, 95, 0.6));
+    border: 1px solid rgba(180, 225, 255, 0.28);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255,255,255,0.18);
+    animation: floatingWindow 6s ease-in-out infinite;
+}
+
+.auth-container h2 {
+    font-family: "Orbitron", sans-serif;
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 25px;
+    color: #f4fbff;
+    text-shadow: 0 0 10px rgba(125, 220, 255, 0.9);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #c7eaff;
+}
+
+.input-hint {
+    font-size: 11px;
+    color: #8ccbeb;
+    margin-top: 4px;
+    line-height: 1.3;
+}
+
+.avatar-options {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.avatar-options img {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    background: rgba(2, 17, 34, 0.6);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.avatar-options img:hover {
+    transform: scale(1.1);
+}
+
+.avatar-options img.selected {
+    border-color: #7ddcff;
+    box-shadow: 0 0 15px rgba(125, 220, 255, 0.6);
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: linear-gradient(135deg, #176d9b, #274f9d);
+    color: #ffffff;
+    font-family: "Orbitron", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(15, 100, 170, 0.35);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(20, 150, 220, 0.45);
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #aac3d2;
+}
+
+.auth-switch a {
+    color: #7ddcff;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 5px;
+    text-decoration: underline;
+}
+
+/* APP CONTAINER */
+.container {
+    width: min(1180px, 94%);
+    margin: 35px auto;
+    position: relative;
+    z-index: 2;
+}
+
+header {
+    position: relative;
+    padding: 32px;
+    margin-bottom: 28px;
+    text-align: center;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(8, 30, 65, 0.68), rgba(20, 55, 95, 0.35));
+    border: 1px solid rgba(180, 225, 255, 0.28);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255,255,255,0.18), 0 0 45px rgba(75, 174, 255, 0.12);
+    animation: floatingWindow 6s ease-in-out infinite;
+}
+
+.logout-btn {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 150, 170, 0.3);
+    background: linear-gradient(135deg, rgba(160, 45, 80, 0.8), rgba(115, 38, 78, 0.8));
+    color: #ffffff;
+    font-family: "Orbitron", sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(255, 80, 130, 0.4);
+}
+
+header h1 {
+    font-family: "Orbitron", sans-serif;
+    font-size: clamp(30px, 5vw, 52px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    color: #f4fbff;
+    text-shadow: 0 0 8px rgba(125, 220, 255, 0.9), 0 0 20px rgba(50, 160, 255, 0.7);
+}
+
+header p {
+    font-size: 16px;
+    font-weight: 500;
+    color: #c7eaff;
+}
+
+/* NAVIGATION */
+.buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 13px;
+    margin-bottom: 28px;
+}
+
+.nav-btn {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(150, 220, 255, 0.32);
+    padding: 13px 21px;
+    border-radius: 50px;
+    color: #eaf9ff;
+    font-family: "Orbitron", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg, rgba(18, 64, 105, 0.85), rgba(16, 37, 70, 0.75));
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav-btn.active {
+    background: linear-gradient(135deg, #287bb0, #24538c);
+    border-color: #8ee8ff;
+    box-shadow: 0 0 18px rgba(75, 205, 255, 0.45);
+}
+
+/* SECTIONS */
+.section {
+    display: none;
+    position: relative;
+    padding: 30px;
+    margin-bottom: 30px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(7, 31, 58, 0.76), rgba(8, 24, 48, 0.62));
+    border: 1px solid rgba(160, 220, 255, 0.25);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.55);
+}
+
+.section.active {
+    display: block;
+}
+
+.section h2 {
+    font-family: "Orbitron", sans-serif;
+    font-size: 24px;
+    margin-bottom: 24px;
+    color: #eafaff;
+}
+
+/* INPUT & BUTTONS */
+.input-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+input, select {
+    flex: 1;
+    min-width: 180px;
+    padding: 14px 16px;
+    color: #effaff;
+    font-family: "Quicksand", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    background: rgba(2, 17, 34, 0.72);
+    border: 1px solid rgba(145, 215, 255, 0.25);
+    border-radius: 13px;
+    outline: none;
+}
+
+input:focus, select:focus {
+    border-color: rgba(110, 220, 255, 0.85);
+    box-shadow: 0 0 15px rgba(60, 190, 255, 0.25);
+}
+
+.add-btn {
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 13px 21px 13px 45px;
+    border-radius: 14px;
+    color: white;
+    font-family: "Orbitron", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, #176d9b, #274f9d);
+}
+
+.add-btn::before {
+    content: "🐼";
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 21px;
+}
+
+/* DASHBOARD EXTENSIONS */
+.profile-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(2, 17, 34, 0.5);
+    border: 1px solid rgba(145, 215, 255, 0.2);
+    margin-bottom: 25px;
+}
+
+.profile-avatar {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    border: 2px solid #7ddcff;
+    box-shadow: 0 0 15px rgba(125, 220, 255, 0.4);
+}
+
+.profile-info h3 {
+    font-family: "Orbitron", sans-serif;
+    color: #f4fbff;
+    margin-bottom: 4px;
+}
+
+.profile-info p {
+    font-size: 13px;
+    color: #91abc1;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin-top: 25px;
+}
+
+.dashboard-box {
+    padding: 20px;
+    border-radius: 18px;
+    background: rgba(2, 17, 34, 0.4);
+    border: 1px solid rgba(150, 220, 255, 0.15);
+}
+
+.dashboard-box h4 {
+    font-family: "Orbitron", sans-serif;
+    color: #a9eaff;
+    margin-bottom: 12px;
+}
+
+.pending-list {
+    padding-left: 20px;
+    color: #c7eaff;
+}
+
+/* STATS */
+.stats {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 25px;
+}
+
+.stat-card {
+    min-width: 160px;
+    padding: 20px 25px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(35, 93, 125, 0.42), rgba(24, 48, 85, 0.38));
+    border: 1px solid rgba(150, 220, 255, 0.15);
+    border-radius: 18px;
+}
+
+.stat-card h3 {
+    font-family: "Orbitron", sans-serif;
+    color: #a9eaff;
+    font-size: 32px;
+}
+
+/* TIMER & HOURGLASS */
+.timer-box {
+    text-align: center;
+    padding: 35px;
+    border-radius: 25px;
+}
+
+#timerDisplay {
+    font-family: "Orbitron", sans-serif;
+    font-size: clamp(58px, 10vw, 105px);
+    font-weight: 700;
+    margin: 30px 0;
+    color: #eafaff;
+    text-shadow: 0 0 10px #62d9ff, 0 0 25px #2e9eea;
+}
+
+.timer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.timer-buttons button {
+    padding: 12px 21px;
+    border-radius: 12px;
+    color: white;
+    font-family: "Orbitron", sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.start { background: linear-gradient(135deg, #168d8e, #1674a0); }
+.pause { background: linear-gradient(135deg, #9a6b28, #b14d35); }
+.reset { background: linear-gradient(135deg, #9b3d5c, #693b79); }
+
+.timer-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 45px;
+    margin: 25px 0 35px;
+}
+
+.hourglass {
+    position: relative;
+    width: 105px;
+    height: 145px;
+}
+
+.glass-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(10% 0, 90% 0, 57% 50%, 90% 100%, 10% 100%, 43% 50%);
+    background: linear-gradient(90deg, rgba(160, 230, 255, 0.18), rgba(255,255,255,0.04), rgba(160, 230, 255, 0.18));
+    border: 2px solid rgba(150, 225, 255, 0.65);
+}
+
+.sand {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 62px;
+    background: linear-gradient(180deg, #8ee9ff, #46aee8);
+}
+
+.top-sand {
+    top: 7px;
+    height: 62px;
+    clip-path: polygon(0 0, 100% 0, 70% 100%, 30% 100%);
+}
+
+.bottom-sand {
+    bottom: 7px;
+    height: 8px;
+    clip-path: polygon(30% 0, 70% 0, 100% 100%, 0 100%);
+}
+
+.sand-stream {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 4px;
+    height: 35px;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, #a8f0ff, #43b9ee);
+    opacity: 0;
+}
+
+footer {
+    text-align: center;
+    padding: 22px;
+    color: #a9c9dc;
+    font-size: 14px;
+}
+
+@media (max-width: 700px) {
+    .container { width: 96%; }
+    .nav-btn { width: 100%; }
+    .input-area { flex-direction: column; }
+    input, select, .add-btn { width: 100%; }
+    .timer-visual { flex-direction: column; gap: 20px; }
+}
+
+/* TASK & LIST ITEM LAYOUT CLEANUP */
+#taskList, #reminderList {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+#taskList li, #reminderList li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(2, 17, 34, 0.5);
+    border: 1px solid rgba(145, 215, 255, 0.18);
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    color: #eaf9ff;
+}
+
+/* BURGUNDY DELETE BUTTON STYLE */
+.delete-btn {
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 120, 140, 0.35);
+    background: linear-gradient(135deg, #800020, #4a0013);
+    color: #ffffff;
+    font-family: "Orbitron", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(128, 0, 32, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: linear-gradient(135deg, #9b0028, #600019);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(155, 0, 40, 0.6);
+}
